@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser(prog='vib_analysis',
                                  epilog='Enjoy the program! :)')
 
 parser.add_argument('filename', type=str, help='Name of the file to be analyzed. It can be either ORCA, GAUSSIAN or TURBOMOLE (aoforce) output file. \
-                    When analyzing TURBOMOLE output file, the control file must be specified.')
+                    When analyzing TURBOMOLE output file, the control file must be specified with the \'-c\' argument.')
 parser.add_argument('-c', '--control', type=str, help='Name of the control file in TM vibrational analysis.')
 parser.add_argument('-r', '--range', default=[1000,2000], type=float, nargs=2, help='Frequency range to be included in the output. Default is 1000-2000 cm^-1')
 parser.add_argument('-s', '--scaling', default=1.00, type=float, help='Scaling factor for the frequencies. Default is 1.00')
@@ -21,7 +21,7 @@ parser.add_argument('-x', '--indices', type=int, nargs='*', help='List of atoms 
                     The supported groups are CO, NH2, and NH.')
 parser.add_argument('-int', '--intensities', action='store_true', help='Calculates Raman intensities based on the Raman activities and save them to a file.')
 parser.add_argument('-xf', '--indices-file', type=str, help='File containing the list of atoms to be included in the functional group contribution analysis. \
-                    Each group should be on a separate line. The atoms in the group should be separated by spaces.')
+                    Each group should be in a separate line. The atoms in the group should be separated by spaces.')
 parser.add_argument('-p', '--print', action='store_true', help='Prints the contributions of functional groups to the console.')
 parser.add_argument('-P', '--print-all', action='store_true', help='Prints the contributions of the functional groups and individual atoms to the console.')
 parser.add_argument('-T', type=float, default=298.15, help="Temperature in Kelvin (default: 298.15)")
@@ -782,7 +782,7 @@ elif args.indices:
         out_file.write(''.join([atomnames[atom] for atom in tmp_atoms]).rjust(10) + '\n')
         out_file.write(''.join(x.rjust(8) for x in [' ',' ']))
         if args.intensities:
-            out_file.write(' '.rjust(9))
+            out_file.write(' '.rjust(8))
         out_file.write(','.join(str(x+1) for x in tmp_atoms).rjust(10) + '\n')
         for idx, freq in zip(range(len(frequencies)), frequencies):
             if min_max[0] <= float(freq)*scaling <= min_max[1]:
