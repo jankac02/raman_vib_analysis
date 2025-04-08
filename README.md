@@ -76,7 +76,7 @@ we get the following output:
 ```
 The script is not able to find any functional groups because it only looks for C=O, NH2 and NH groups.
 
-We can use the "-x" argument to specify the exact indices we are interested in in thge following manner:
+We can use the "-x" argument to specify the exact indices we are interested in in the following manner:
 ```
 python3 vib_analysis.py water.out -int -p -r 1000 4000 -x 1 2
 ```
