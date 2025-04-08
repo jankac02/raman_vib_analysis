@@ -1,7 +1,7 @@
 # raman_vib_analysis
 
 Raman_vib_analysis is a script used for analysing the Raman vibrational modes of a given calculation and estimation of contribution of each atom or a group to the specific vibrational mode. The usage of the program is as follows:
-'''
+```
 usage: vib_analysis filename [options]
 
 Extracting vibrational data from ORCA, GAUSSIAN and TURBOMOLE output files and
@@ -48,6 +48,6 @@ optional arguments:
                         inputed group (given as a index of a group).
 
 Enjoy the program! :)
-'''
+```
 
 Wheb analysing the Turbomole Raman calculation, aoforce file should be specified as the positional argument "filename" and the control file has to be given with the use of "-c" optional argument.
