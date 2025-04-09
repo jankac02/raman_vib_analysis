@@ -100,14 +100,14 @@ Output:
 
 For analysis of more complicated structures we can use a list file to specify the exact group indices we are interested in. An example of a list file is as follows:
 ```
-12 13 #this is an OH group
-3 12 #this is the C-O bond
+7 13 #this is an OH group
+1 7 #this is the C-O bond
 1 2 3 4 5 6 "ring" #these are the carbon atoms of the benzene ring
 ```
 
 To use the list in the analysis we just have to specify its name with "-xf" argument:
 ```
-python3 vib_analysis.py orca.out -r 1200 4000 -s 0.95 -p -int -xf list
+python3 vib_analysis.py aoforce.out -c control -r 1200 4000 -s 0.95 -p -xf list -int
 ```
 and we get the following output:
 ```
@@ -115,33 +115,33 @@ and we get the following output:
 
      idx       v     Int          OH          CO        ring
 
-                                12,13        3,12     1,...,6
+                                 7,13         1,7     1,...,6
 
-      27  1246.0 2577.75        18.1        63.7        63.2
+      27  1260.4 2440.97        18.3        61.6        62.1
 
-      28  1287.8   38.17         8.1        10.3        80.5
+      28  1294.3  115.33         7.3        11.1        80.2
 
-      29  1323.3   44.74        14.1         8.1        21.3
+      29  1323.7   51.81        13.7         8.8        21.5
 
-      30  1459.8   53.43         5.2        13.3        61.7
+      30  1464.7   83.84         5.3        13.2        62.1
 
-      31  1488.1  108.91         2.8        17.1        63.5
+      31  1497.5  162.42         2.5        18.5        65.1
 
-      32  1617.1  1724.8         1.2        20.2        91.3
+      32  1624.2 1005.32         1.9        24.3        91.0
 
-      33  1626.9 1828.62         1.9        19.2        90.8
+      33  1635.6 1670.14         1.3        16.9        91.0
 
-      34  3078.4 1808.47         0.0         0.0         8.3
+      34  3077.8 2658.25         0.0         0.0         8.2
 
-      35  3086.2 3180.19         0.0         0.0         8.2
+      35  3092.1  3637.5         0.0         0.0         8.1
 
-      36  3094.1 2816.26         0.0         0.0         8.6
+      36  3099.1 3715.08         0.0         0.0         8.6
 
-      37  3101.4  869.41         0.0         0.0         8.9
+      37  3111.5 1309.85         0.0         0.0         8.7
 
-      38  3111.2 10000.0         0.0         0.0         9.2
+      38  3118.5 10000.0         0.0         0.0         9.1
 
-      39  3712.6 1739.92       100.0         5.9         0.0
+      39  3770.9 2342.04       100.0         5.9         0.0
 ```
 
 We can also sort the vibrational modes by a contribution of a certain group. For example with we would want to sort the frequencies by the contribution of the C-O bond, we have to add "-sr 2" (because the C-O bond is the second printed group). The output changes to:
@@ -150,31 +150,31 @@ We can also sort the vibrational modes by a contribution of a certain group. For
 
      idx       v     Int          OH          CO        ring
 
-                                12,13        3,12     1,...,6
+                                 7,13         1,7     1,...,6
 
-      27  1246.0 2577.75        18.1        63.7        63.2
+      27  1260.4 2440.97        18.3        61.6        62.1
 
-      32  1617.1  1724.8         1.2        20.2        91.3
+      32  1624.2 1005.32         1.9        24.3        91.0
 
-      33  1626.9 1828.62         1.9        19.2        90.8
+      31  1497.5  162.42         2.5        18.5        65.1
 
-      31  1488.1  108.91         2.8        17.1        63.5
+      33  1635.6 1670.14         1.3        16.9        91.0
 
-      30  1459.8   53.43         5.2        13.3        61.7
+      30  1464.7   83.84         5.3        13.2        62.1
 
-      28  1287.8   38.17         8.1        10.3        80.5
+      28  1294.3  115.33         7.3        11.1        80.2
 
-      29  1323.3   44.74        14.1         8.1        21.3
+      29  1323.7   51.81        13.7         8.8        21.5
 
-      39  3712.6 1739.92       100.0         5.9         0.0
+      39  3770.9 2342.04       100.0         5.9         0.0
 
-      37  3101.4  869.41         0.0         0.0         8.9
+      34  3077.8 2658.25         0.0         0.0         8.2
 
-      34  3078.4 1808.47         0.0         0.0         8.3
+      37  3111.5 1309.85         0.0         0.0         8.7
 
-      36  3094.1 2816.26         0.0         0.0         8.6
+      38  3118.5 10000.0         0.0         0.0         9.1
 
-      38  3111.2 10000.0         0.0         0.0         9.2
+      36  3099.1 3715.08         0.0         0.0         8.6
 
-      35  3086.2 3180.19         0.0         0.0         8.2
+      35  3092.1  3637.5         0.0         0.0         8.1
 ```
