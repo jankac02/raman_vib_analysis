@@ -660,12 +660,34 @@ if args.indices_file:
 
             idx_file = [list(map(int, x.split())) for x in idx_file]
             idx_file = list(map(lambda x: [y-1 for y in x], idx_file))
+        pop_line = []
         for idx, line in enumerate(idx_file):
-            if len(line) == 1:
-                print(f'Error: Not enough indices in the line: {line}. Specify at least two indices for a group.')
-            elif len(line) == 0:
-                idx_file.pop(idx)
-            for i in line:
+#            if len(line) == 1:
+#                print(f'Error: Not enough indices in the line: {line}. Specify at least two indices for a group.')
+#            elif len(line) == 0:
+#                idx_file.pop(idx)
+#            for i in line:
+#                if i not in range(len(atomnames)):
+#                    print(f'Error: Index {i+1} out of range.')
+#                    sys.exit(1)
+#                i_xyz = coordinates[i]
+#                for j in line:
+#                    if j not in range(len(atomnames)):
+#                        print(f'Error: Index {j+1} out of range.')
+#                        sys.exit(1)
+#                    if i == j:
+#                        continue
+#                    j_xyz = coordinates[j]
+#                    ij_vec = np.subtract(j_xyz, i_xyz)
+#                    if np.sqrt(np.dot(ij_vec,ij_vec)) >= 1.5:
+#                        dist = np.sqrt(np.dot(ij_vec,ij_vec))
+#                        print(f'Warning: Atoms {i+1} and {j+1} are too far apart ({dist}) to be considered bonded.')
+#                        continue
+            con = [[] for x in range(len(line))]
+            if len(line) == 0:
+                pop_line.append(idx)
+                continue
+            for i_idx, i in enumerate(line):
                 if i not in range(len(atomnames)):
                     print(f'Error: Index {i+1} out of range.')
                     sys.exit(1)
@@ -675,12 +697,21 @@ if args.indices_file:
                         print(f'Error: Index {j+1} out of range.')
                         sys.exit(1)
                     if i == j:
+                        con[i_idx].append(10)
                         continue
                     j_xyz = coordinates[j]
                     ij_vec = np.subtract(j_xyz, i_xyz)
-                    if np.sqrt(np.dot(ij_vec,ij_vec)) >= 1.5:
-                        dist = np.sqrt(np.dot(ij_vec,ij_vec))
-                        print(f'Warning: Atoms {i+1} and {j+1} are too far apart ({dist}) to be considered bonded.')
+                    con[i_idx].append(np.sqrt(np.dot(ij_vec,ij_vec)))
+            con = np.array(con)
+            for idx, col in enumerate(np.all(con > 1.5, axis=0)):
+                if col:
+                    min_dist = np.min(con[idx])
+                    print(f'!!!Warning: Atom {line[idx]+1} might be too far apart from the rest of the specified functional group ({min_dist:.4f}A from the closest atom).')
+        pop_line.sort(reverse=True)
+        for line in pop_line:
+            idx_file.pop(line)
+            alias.pop(line)
+            
     except FileNotFoundError as fnfe:
         print(fnfe)
         sys.exit(1)
@@ -933,17 +964,17 @@ else:
 
 
 if args.print:
-    print('\t*** Group contributions ***\n'.upper())
+    print('\n\t*** Group contributions ***\n'.upper())
     with open('Z_MODES_' + filename, 'r') as out_file:
         for line in out_file:
             print(line)
 elif args.print_all:
-    print('\t*** Group contributions ***\n'.upper())
+    print('\n\t*** Group contributions ***\n'.upper())
     with open('Z_MODES_' + filename, 'r') as out_file:
         for line in out_file:
             print(line)
     print('\n\n')
-    print('\t*** Atom contributions ***\n'.upper())
+    print('\n\t*** Atom contributions ***\n'.upper())
     with open('Z_OUT_' + filename, 'r') as out_file:
         for line in out_file:
             print(line)
