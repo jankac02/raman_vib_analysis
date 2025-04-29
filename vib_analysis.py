@@ -621,8 +621,12 @@ with open('Z_OUT_' + filename, 'w') as out_file:
         out_file.write(''.join(str(round(100*x,1)).rjust(6) for x in nm))
         out_file.write('\n')
 
-df = pd.read_csv('Z_OUT_' + filename, delim_whitespace=True)
-df.to_csv('Z_OUT_' + filename + '.csv', index=False)
+df = pd.read_csv('Z_OUT_' + filename, delim_whitespace=True, header=None)
+row = df.iloc[1].tolist()
+padded_row = [' ']*2 + row
+padded_row = padded_row[:len(df.columns)]
+df.iloc[1] = padded_row
+df.to_csv('Z_OUT_' + filename.split(".")[0] + '.csv', index=False)
         
 '''Estimating contributions of CO stretch, NH bend, and NH2 bend
    - these are estimates based on total displacements on the relevant atoms'''
@@ -792,8 +796,14 @@ if args.indices_file:
             out_file.write(''.join(str(round(100*x,1)).rjust(12) for x in group))
             out_file.write('\n')
 
-    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True)
-    df.to_csv('Z_MODES_' + filename + '.csv', index=False)
+    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True, header=None)
+    row = df.iloc[1].tolist()
+    padded_row = [' ']*2 + row
+    if args.intensities:
+        padded_row = [' '] + padded_row
+    padded_row = padded_row[:len(df.columns)]
+    df.iloc[1] = padded_row
+    df.to_csv('Z_MODES_' + filename.split(".")[0] + '.csv', index=False)
 
 
 elif args.indices:
@@ -813,6 +823,7 @@ elif args.indices:
 
     '''Output digested contributions and input for plot_Raman_specs.py'''
     with open('Z_MODES_' + filename, 'w') as out_file:
+
         string_list = ['idx', 'v']
         if args.intensities:
             string_list.append('Int')
@@ -835,8 +846,14 @@ elif args.indices:
             out_file.write(''.join(str(round(100*x,1)).rjust(10) for x in groups_contributions[idx]))
             out_file.write('\n')
 
-    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True)
-    df.to_csv('Z_MODES_' + filename + '.csv', index=False)
+    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True, header=None)
+    row = df.iloc[1].tolist()
+    padded_row = [' ']*2 + row
+    if args.intensities:
+        padded_row = [' '] + padded_row
+    padded_row = padded_row[:len(df.columns)]
+    df.iloc[1] = padded_row
+    df.to_csv('Z_MODES_' + filename.split(".")[0] + '.csv', index=False)
 
 else:
     for idx in tmp_atoms:
@@ -972,8 +989,14 @@ else:
             out_file.write(''.join(str(round(100*x,1)).rjust(10) for x in group))
             out_file.write('\n')
 
-    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True)
-    df.to_csv('Z_MODES_' + filename + '.csv', index=False)
+    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True, header=None)
+    row = df.iloc[1].tolist()
+    padded_row = [' ']*2 + row
+    if args.intensities:
+        padded_row = [' '] + padded_row
+    padded_row = padded_row[:len(df.columns)]
+    df.iloc[1] = padded_row
+    df.to_csv('Z_MODES_' + filename.split(".")[0] + '.csv', index=False)
 
 
 if args.print:
