@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import sys
 import argparse
 import os
@@ -619,6 +620,9 @@ with open('Z_OUT_' + filename, 'w') as out_file:
         out_file.write(str(round(scaling*freq,1)).rjust(8))
         out_file.write(''.join(str(round(100*x,1)).rjust(6) for x in nm))
         out_file.write('\n')
+
+df = pd.read_csv('Z_OUT_' + filename, delim_whitespace=True)
+df.to_csv('Z_OUT_' + filename + '.csv', index=False)
         
 '''Estimating contributions of CO stretch, NH bend, and NH2 bend
    - these are estimates based on total displacements on the relevant atoms'''
@@ -788,6 +792,9 @@ if args.indices_file:
             out_file.write(''.join(str(round(100*x,1)).rjust(12) for x in group))
             out_file.write('\n')
 
+    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True)
+    df.to_csv('Z_MODES_' + filename + '.csv', index=False)
+
 
 elif args.indices:
     groups_contributions = []
@@ -827,6 +834,9 @@ elif args.indices:
                 out_file.write(str(round(intensities[idx],2)).rjust(8))
             out_file.write(''.join(str(round(100*x,1)).rjust(10) for x in groups_contributions[idx]))
             out_file.write('\n')
+
+    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True)
+    df.to_csv('Z_MODES_' + filename + '.csv', index=False)
 
 else:
     for idx in tmp_atoms:
@@ -961,6 +971,9 @@ else:
                 out_file.write(str(round(intens,2)).rjust(8))
             out_file.write(''.join(str(round(100*x,1)).rjust(10) for x in group))
             out_file.write('\n')
+
+    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True)
+    df.to_csv('Z_MODES_' + filename + '.csv', index=False)
 
 
 if args.print:
