@@ -6,6 +6,24 @@ import os
 import re
 
 
+def write_csv(filename):
+    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True, header=None)
+    row = df.iloc[1].tolist()
+    padded_row = [' ']*2 + row
+    if args.intensities:
+        padded_row = [' '] + padded_row
+    padded_row = padded_row[:len(df.columns)]
+    df.iloc[1] = padded_row
+    df.to_csv('Z_MODES_' + filename.split(".")[0] + '.csv', index=False)
+
+    with open('Z_MODES_' + filename.split(".")[0] + '.csv', 'r') as f:
+        lines = f.readlines()
+        del lines[0]
+        with open('Z_MODES_' + filename.split(".")[0] + '.csv', 'w') as f:
+            f.writelines(lines)
+
+
+
 parser = argparse.ArgumentParser(prog='vib_analysis', 
                                  description='Extracting vibrational data from ORCA, GAUSSIAN and TURBOMOLE output files and analyzing it.\n\
                                  Program already creates output files so there\'s no need to pipe the output to a file.\n',
@@ -28,6 +46,7 @@ parser.add_argument('-P', '--print-all', action='store_true', help='Prints the c
 parser.add_argument('-T', type=float, default=298.15, help="Temperature in Kelvin (default: 298.15)")
 parser.add_argument('-WL', type=float, default=18797, help="Excitation wavelength in cm^-1 (default: 18797 cm^-1 / 532 nm)")
 parser.add_argument('-sr', '--sort', type=int, nargs=1, help='Sorts the output frequencies by the contributions of inputed group (given as a index of a group).')
+parser.add_argument('--csv' , action='store_true', help='Outputs the data in a CSV format. The default is to output the data in a space-separated format.')
 
 args = parser.parse_args()
 
@@ -621,12 +640,15 @@ with open('Z_OUT_' + filename, 'w') as out_file:
         out_file.write(''.join(str(round(100*x,1)).rjust(6) for x in nm))
         out_file.write('\n')
 
-df = pd.read_csv('Z_OUT_' + filename, delim_whitespace=True, header=None)
-row = df.iloc[1].tolist()
-padded_row = [' ']*2 + row
-padded_row = padded_row[:len(df.columns)]
-df.iloc[1] = padded_row
-df.to_csv('Z_OUT_' + filename.split(".")[0] + '.csv', index=False)
+if args.csv:
+    df = pd.read_csv('Z_OUT_' + filename, delim_whitespace=True, header=None)
+    row = df.iloc[1].tolist()
+    padded_row = [' ']*2 + row
+    if args.intensities:
+        padded_row = [' '] + padded_row
+    padded_row = padded_row[:len(df.columns)]
+    df.iloc[1] = padded_row
+    df.to_csv('Z_OUT_' + filename.split(".")[0] + '.csv', index=False)
         
 '''Estimating contributions of CO stretch, NH bend, and NH2 bend
    - these are estimates based on total displacements on the relevant atoms'''
@@ -796,14 +818,9 @@ if args.indices_file:
             out_file.write(''.join(str(round(100*x,1)).rjust(12) for x in group))
             out_file.write('\n')
 
-    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True, header=None)
-    row = df.iloc[1].tolist()
-    padded_row = [' ']*2 + row
-    if args.intensities:
-        padded_row = [' '] + padded_row
-    padded_row = padded_row[:len(df.columns)]
-    df.iloc[1] = padded_row
-    df.to_csv('Z_MODES_' + filename.split(".")[0] + '.csv', index=False)
+
+    if args.csv:
+        write_csv(filename)
 
 
 elif args.indices:
@@ -846,14 +863,8 @@ elif args.indices:
             out_file.write(''.join(str(round(100*x,1)).rjust(10) for x in groups_contributions[idx]))
             out_file.write('\n')
 
-    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True, header=None)
-    row = df.iloc[1].tolist()
-    padded_row = [' ']*2 + row
-    if args.intensities:
-        padded_row = [' '] + padded_row
-    padded_row = padded_row[:len(df.columns)]
-    df.iloc[1] = padded_row
-    df.to_csv('Z_MODES_' + filename.split(".")[0] + '.csv', index=False)
+    if args.csv:
+        write_csv(filename)
 
 else:
     for idx in tmp_atoms:
@@ -989,14 +1000,8 @@ else:
             out_file.write(''.join(str(round(100*x,1)).rjust(10) for x in group))
             out_file.write('\n')
 
-    df = pd.read_csv('Z_MODES_' + filename, delim_whitespace=True, header=None)
-    row = df.iloc[1].tolist()
-    padded_row = [' ']*2 + row
-    if args.intensities:
-        padded_row = [' '] + padded_row
-    padded_row = padded_row[:len(df.columns)]
-    df.iloc[1] = padded_row
-    df.to_csv('Z_MODES_' + filename.split(".")[0] + '.csv', index=False)
+    if args.csv:
+        write_csv(filename)
 
 
 if args.print:
@@ -1004,6 +1009,7 @@ if args.print:
     with open('Z_MODES_' + filename, 'r') as out_file:
         for line in out_file:
             print(line)
+    
 elif args.print_all:
     print('\n\t*** Group contributions ***\n'.upper())
     with open('Z_MODES_' + filename, 'r') as out_file:
